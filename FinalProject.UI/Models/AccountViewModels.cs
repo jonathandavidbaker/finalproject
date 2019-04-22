@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace FinalProject.UI.Models
+namespace IdentitySample.Models
 {
     public class ExternalLoginConfirmationViewModel
     {
@@ -64,6 +64,12 @@ namespace FinalProject.UI.Models
 
     public class RegisterViewModel
     {
+        [Required]
+        public string FirstName { get; set; }
+
+        [Required]
+        public string LastName { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
