@@ -48,10 +48,39 @@ namespace FinalProject.UI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "LessonID,LessonTitle,CourseID,Introduction,VideoURL,PdfFileName,IsActive")] Lesson lesson)
+        public ActionResult Create([Bind(Include = "LessonID,LessonTitle,CourseID,Introduction,VideoURL,PdfFileName,IsActive")] Lesson lesson, HttpPostedFileBase pdfFile)
         {
             if (ModelState.IsValid)
             {
+                //Allowing File Uploads
+                string pdfName = "Not Available";
+
+                if (pdfFile != null)
+                {
+                    pdfName = pdfFile.FileName;
+                    string ext = pdfName.Substring(pdfName.LastIndexOf('.')).ToLower();
+                    if (ext == ".pdf")
+                    {
+                        pdfFile.SaveAs(Server.MapPath("~/Content/Files/" + pdfName));
+                    }
+                }
+                lesson.PdfFileName = pdfName;
+
+                //Stripping relevant information from YouTube URL
+                var v = lesson.VideoURL.IndexOf("v=");
+                var amp = lesson.VideoURL.IndexOf("&", v);
+                string vid;
+                if (amp == -1)
+                {
+                    vid = lesson.VideoURL.Substring(v + 2);
+                }
+                else
+                {
+                    vid = lesson.VideoURL.Substring(v + 2, amp - (v + 2));
+                }
+                lesson.VideoURL = vid;
+
+     
                 db.Lessons.Add(lesson);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -82,10 +111,37 @@ namespace FinalProject.UI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "LessonID,LessonTitle,CourseID,Introduction,VideoURL,PdfFileName,IsActive")] Lesson lesson)
+        public ActionResult Edit([Bind(Include = "LessonID,LessonTitle,CourseID,Introduction,VideoURL,PdfFileName,IsActive")] Lesson lesson, HttpPostedFileBase pdfFile)
         {
             if (ModelState.IsValid)
             {
+                //Allowing File Uploads
+                string pdfName = "Not Available";
+
+                if (pdfFile != null)
+                {
+                    pdfName = pdfFile.FileName;
+                    string ext = pdfName.Substring(pdfName.LastIndexOf('.')).ToLower();
+                    if (ext == ".pdf")
+                    {
+                        pdfFile.SaveAs(Server.MapPath("~/Content/Files/" + pdfName));
+                    }
+                }
+                lesson.PdfFileName = pdfName;
+
+                //Stripping relevant information from YouTube URL
+                var v = lesson.VideoURL.IndexOf("v=");
+                var amp = lesson.VideoURL.IndexOf("&", v);
+                string vid;
+                if (amp == -1)
+                {
+                    vid = lesson.VideoURL.Substring(v + 2);
+                }
+                else
+                {
+                    vid = lesson.VideoURL.Substring(v + 2, amp - (v + 2));
+                }
+                lesson.VideoURL = vid;
                 db.Entry(lesson).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

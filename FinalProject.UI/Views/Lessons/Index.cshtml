@@ -44,7 +44,7 @@
             @Html.DisplayFor(modelItem => item.VideoURL)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.PdfFileName)
+            <a href="@Url.Content("~/Content/Files/" + @item.PdfFileName)" target="_blank">Click to View Document</a>
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.IsActive)

@@ -89,6 +89,7 @@ namespace FinalProject.DATA
         public string Introduction { get; set; }
 
         [StringLength(250, ErrorMessage = "* 250 Characters or fewer")]
+        [Display(Name = "Full YouTube URL")]
         public string VideoURL { get; set; }
 
         [StringLength(100, ErrorMessage = "* 100 Characters or fewer")]
