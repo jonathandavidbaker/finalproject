@@ -49,7 +49,7 @@ namespace FinalProject.DATA
     }
 
     [MetadataType(typeof(CourseCompletionMetadata))]
-    public partial class CourseCompetion { }
+    public partial class CourseCompletion { }
 
     public class EmployeeMetadata
     {

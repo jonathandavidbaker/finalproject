@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using FinalProject.DATA;
+using Microsoft.AspNet.Identity;
 
 namespace FinalProject.UI.Controllers
 {
@@ -17,7 +18,7 @@ namespace FinalProject.UI.Controllers
         // GET: Lessons
         public ActionResult Index()
         {
-            var lessons = db.Lessons.Include(l => l.Cours);
+            var lessons = db.Lessons.Include(l => l.Course);
             return View(lessons.ToList());
         }
 
@@ -33,6 +34,22 @@ namespace FinalProject.UI.Controllers
             {
                 return HttpNotFound();
             }
+
+
+            if (User.IsInRole("Employee"))
+            {
+                LessonView newLessonView = new LessonView();
+                newLessonView.DateViewed = DateTime.Now;
+                newLessonView.UserID = User.Identity.GetUserId();
+                newLessonView.LessonID = (int)id;
+
+                db.LessonViews.Add(newLessonView);
+                db.SaveChanges();
+
+                
+            }
+
+
             return View(lesson);
         }
 
@@ -67,20 +84,22 @@ namespace FinalProject.UI.Controllers
                 lesson.PdfFileName = pdfName;
 
                 //Stripping relevant information from YouTube URL
-                var v = lesson.VideoURL.IndexOf("v=");
-                var amp = lesson.VideoURL.IndexOf("&", v);
-                string vid;
-                if (amp == -1)
+                if (lesson.VideoURL != null)
                 {
-                    vid = lesson.VideoURL.Substring(v + 2);
+                    var v = lesson.VideoURL.IndexOf("v=");
+                    var amp = lesson.VideoURL.IndexOf("&", v);
+                    string vid;
+                    if (amp == -1)
+                    {
+                        vid = lesson.VideoURL.Substring(v + 2);
+                    }
+                    else
+                    {
+                        vid = lesson.VideoURL.Substring(v + 2, amp - (v + 2));
+                    }
+                    lesson.VideoURL = vid;
                 }
-                else
-                {
-                    vid = lesson.VideoURL.Substring(v + 2, amp - (v + 2));
-                }
-                lesson.VideoURL = vid;
 
-     
                 db.Lessons.Add(lesson);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -170,6 +189,7 @@ namespace FinalProject.UI.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            //TODO - fix this
             Lesson lesson = db.Lessons.Find(id);
             db.Lessons.Remove(lesson);
             db.SaveChanges();

@@ -19,6 +19,6 @@ namespace FinalProject.DATA
         public int CourseID { get; set; }
         public System.DateTime DateCompleted { get; set; }
     
-        public virtual Course Cours { get; set; }
+        public virtual Course Course { get; set; }
     }
 }

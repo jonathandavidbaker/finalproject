@@ -17,7 +17,7 @@ namespace FinalProject.UI.Controllers
         // GET: CourseCompletions
         public ActionResult Index()
         {
-            var courseCompletions = db.CourseCompletions.Include(c => c.Cours);
+            var courseCompletions = db.CourseCompletions.Include(c => c.Course);
             return View(courseCompletions.ToList());
         }
 

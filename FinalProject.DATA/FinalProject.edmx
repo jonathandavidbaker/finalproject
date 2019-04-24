@@ -138,7 +138,7 @@
           <Property Name="UserID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CourseID" Type="Int32" Nullable="false" />
           <Property Name="DateCompleted" Type="DateTime" Nullable="false" Precision="0" />
-          <NavigationProperty Name="Cours" Relationship="Self.FK_CourseCompletions_Courses" FromRole="CourseCompletions" ToRole="Courses" />
+          <NavigationProperty Name="Course" Relationship="Self.FK_CourseCompletions_Courses" FromRole="CourseCompletions" ToRole="Courses" />
         </EntityType>
         <EntityType Name="Course">
           <Key>
@@ -174,7 +174,7 @@
           <Property Name="VideoURL" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
           <Property Name="PdfFileName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="Cours" Relationship="Self.FK_Lessons_Courses" FromRole="Lessons" ToRole="Courses" />
+          <NavigationProperty Name="Course" Relationship="Self.FK_Lessons_Courses" FromRole="Lessons" ToRole="Courses" />
           <NavigationProperty Name="LessonViews" Relationship="Self.FK_LessonViews_Lessons" FromRole="Lessons" ToRole="LessonViews" />
         </EntityType>
         <EntityType Name="LessonView">

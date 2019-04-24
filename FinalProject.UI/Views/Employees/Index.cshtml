@@ -1,11 +1,8 @@
 ﻿@model IEnumerable<FinalProject.DATA.Employee>
-
 @{
     ViewBag.Title = "Index";
 }
-
 <h2>Index</h2>
-
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
@@ -22,24 +19,26 @@
         </th>
         <th></th>
     </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.FirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LastName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Employee1.FirstName)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.UserID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.UserID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.UserID })
-        </td>
-    </tr>
-}
-
+    @foreach (var item in Model)
+    {
+        if (item.ManagerID == ViewBag.UserID || User.IsInRole("Admin"))
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Employee1.FirstName)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.UserID }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.UserID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.UserID })
+                </td>
+            </tr>
+        }
+    }
 </table>

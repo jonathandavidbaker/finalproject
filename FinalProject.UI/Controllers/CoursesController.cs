@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using FinalProject.DATA;
+using Microsoft.AspNet.Identity;
 
 namespace FinalProject.UI.Controllers
 {
@@ -17,7 +18,41 @@ namespace FinalProject.UI.Controllers
         // GET: Courses
         public ActionResult Index()
         {
-            return View(db.Courses.ToList());
+            List<Course> courseslist = new List<Course>();
+            if (User.IsInRole("Employee"))
+            {
+                //foreach (var item in db.CourseCompletions)
+                //{
+
+                //    if (item.UserID != User.Identity.GetUserId())
+                //    {
+                //        courseslist.Add(db.Courses.Find(item.CourseID));
+                //    }
+                //}
+
+
+            }
+            else
+            {
+                courseslist = db.Courses.Include(l => l.Lessons).ToList();
+            }
+
+            return View(courseslist);
+        }
+
+        public ActionResult CompletedCourses()
+        {
+            List<Course> courseslist = new List<Course>();
+
+            foreach (var item in db.CourseCompletions)
+            {
+                if (item.UserID == User.Identity.GetUserId())
+                {
+                    courseslist.Add(db.Courses.Find(item.CourseID));
+                }
+            }
+
+            return View(courseslist);
         }
 
         // GET: Courses/Details/5
@@ -31,6 +66,32 @@ namespace FinalProject.UI.Controllers
             if (course == null)
             {
                 return HttpNotFound();
+            }
+
+            if (User.IsInRole("Employee"))
+            {
+                int lessoncount = db.Lessons.Where(x => x.CourseID == course.CourseID).Count();//<--number of lessons in the given course
+                int lessonviewcount = 0;
+                foreach (var lesson in db.Lessons.Where(x => x.CourseID == course.CourseID))
+                {
+                    foreach (var lessonview in db.LessonViews.Where(x => x.UserID == User.Identity.GetUserId()))
+                    {
+                        if (lessonview.LessonID == lesson.LessonID)
+                        {
+                            lessonviewcount++;
+                        }
+                    }
+                }
+                if (lessonviewcount == lessoncount)
+                {
+                    CourseCompletion newCourseCompletion = new CourseCompletion();
+                    newCourseCompletion.UserID = User.Identity.GetUserId();
+                    newCourseCompletion.CourseID = course.CourseID;
+                    newCourseCompletion.DateCompleted = DateTime.Now;
+
+                    db.CourseCompletions.Add(newCourseCompletion);
+                    db.SaveChanges();
+                }
             }
             return View(course);
         }

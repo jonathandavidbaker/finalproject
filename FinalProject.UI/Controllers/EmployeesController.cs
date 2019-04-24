@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using FinalProject.DATA;
+using Microsoft.AspNet.Identity;
 
 namespace FinalProject.UI.Controllers
 {
@@ -18,6 +19,7 @@ namespace FinalProject.UI.Controllers
         public ActionResult Index()
         {
             var employees = db.Employees.Include(e => e.Employee1);
+            ViewBag.UserID = User.Identity.GetUserId();
             return View(employees.ToList());
         }
 
