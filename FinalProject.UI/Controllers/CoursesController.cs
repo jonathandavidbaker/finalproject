@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using FinalProject.DATA;
 using Microsoft.AspNet.Identity;
+using FinalProject.UI.Models;
 
 namespace FinalProject.UI.Controllers
 {
@@ -18,26 +19,51 @@ namespace FinalProject.UI.Controllers
         // GET: Courses
         public ActionResult Index()
         {
-            List<Course> courseslist = new List<Course>();
             if (User.IsInRole("Employee"))
             {
-                //foreach (var item in db.CourseCompletions)
+                //List<EmployeeVM> empCourses = new List<EmployeeVM>();
+                //string id = User.Identity.GetUserId();
+                //foreach (var course in db.Courses)
                 //{
-
-                //    if (item.UserID != User.Identity.GetUserId())
+                //    EmployeeVM evm = new EmployeeVM();
+                //    evm.CourseID = course.CourseID;
+                //    evm.CourseName = course.CourseName;
+                //    evm.Description = course.Description;
+                //    evm.ValidFor = course.ValidFor;
+                //    evm.LessonCount = db.Lessons.Where(x => x.CourseID == course.CourseID).Count();
+                //    List<CourseCompletion> cc = db.CourseCompletions.Where(x => x.CourseID == course.CourseID).ToList();
+                //    foreach (var item in cc)
                 //    {
-                //        courseslist.Add(db.Courses.Find(item.CourseID));
+                //        if (item.UserID == id)
+                //        {
+                //            evm.DateCompleted = item.DateCompleted;
+                //        }
+
                 //    }
+                //    empCourses.Add(evm);
                 //}
+                IEnumerable<EmployeeVM> empCourses = (from c in db.Courses
+                                                      join cc in db.CourseCompletions on c.CourseID equals cc.CourseID
+                                                      join l in db.Lessons on c.CourseID equals l.CourseID
+                                                      select new EmployeeVM
+                                                      {
+                                                          CourseID = c.CourseID,
+                                                          CourseName = c.CourseName,
+                                                          Description = c.Description,
+                                                          ValidFor = c.ValidFor,
+                                                          LessonCount = db.Lessons.Where(x => x.CourseID == c.CourseID).Count(),
+                                                          DateCompleted = cc.DateCompleted
+                                                      }).ToList();
 
+                return RedirectToAction("EmpIndex", empCourses);
 
             }
-            else
-            {
-                courseslist = db.Courses.Include(l => l.Lessons).ToList();
-            }
+            return View(db.Courses);
+        }
 
-            return View(courseslist);
+        public ActionResult EmpIndex(IEnumerable<EmployeeVM> empCourses)
+        {
+            return View(empCourses);
         }
 
         public ActionResult CompletedCourses()
@@ -51,7 +77,6 @@ namespace FinalProject.UI.Controllers
                     courseslist.Add(db.Courses.Find(item.CourseID));
                 }
             }
-
             return View(courseslist);
         }
 

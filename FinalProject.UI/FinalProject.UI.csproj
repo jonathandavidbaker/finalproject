@@ -185,6 +185,7 @@
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminViewModel.cs" />
+    <Compile Include="Models\EmployeeVM.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -284,6 +285,7 @@
     <Content Include="Views\LessonViews\Edit.cshtml" />
     <Content Include="Views\LessonViews\Index.cshtml" />
     <Content Include="Views\Courses\CompletedCourses.cshtml" />
+    <Content Include="Views\Courses\EmpIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

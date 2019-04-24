@@ -43,10 +43,10 @@ namespace FinalProject.UI.Controllers
                 newLessonView.UserID = User.Identity.GetUserId();
                 newLessonView.LessonID = (int)id;
                 
-                if (db.LessonViews.Where(x => x.UserID == User.Identity.GetUserId()).Where(y => y.LessonID == newLessonView.LessonID).Count() == 0)
-                {
+                //if (db.LessonViews.Where(x => x.UserID == User.Identity.GetUserId()).Where(y => y.LessonID == newLessonView.LessonID).Count() == 0)
+                //{
                     db.LessonViews.Add(newLessonView);
-                }
+                //}
 
                 int lessonViewCounter = 0;
                 List<Lesson> allLessons = db.Lessons.Where(x => x.CourseID == lesson.CourseID).ToList();
@@ -172,18 +172,21 @@ namespace FinalProject.UI.Controllers
                 lesson.PdfFileName = pdfName;
 
                 //Stripping relevant information from YouTube URL
-                var v = lesson.VideoURL.IndexOf("v=");
-                var amp = lesson.VideoURL.IndexOf("&", v);
-                string vid;
-                if (amp == -1)
+                if (lesson.VideoURL != null && lesson.VideoURL.Contains("v="))
                 {
-                    vid = lesson.VideoURL.Substring(v + 2);
+                    var v = lesson.VideoURL.IndexOf("v=");
+                    var amp = lesson.VideoURL.IndexOf("&", v);
+                    string vid;
+                    if (amp == -1)
+                    {
+                        vid = lesson.VideoURL.Substring(v + 2);
+                    }
+                    else
+                    {
+                        vid = lesson.VideoURL.Substring(v + 2, amp - (v + 2));
+                    }
+                    lesson.VideoURL = vid; 
                 }
-                else
-                {
-                    vid = lesson.VideoURL.Substring(v + 2, amp - (v + 2));
-                }
-                lesson.VideoURL = vid;
                 db.Entry(lesson).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -212,7 +215,6 @@ namespace FinalProject.UI.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            //TODO - fix this
             Lesson lesson = db.Lessons.Find(id);
             db.Lessons.Remove(lesson);
             db.SaveChanges();
