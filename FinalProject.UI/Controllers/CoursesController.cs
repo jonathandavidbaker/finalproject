@@ -19,45 +19,45 @@ namespace FinalProject.UI.Controllers
         // GET: Courses
         public ActionResult Index()
         {
-            if (User.IsInRole("Employee"))
-            {
-                //List<EmployeeVM> empCourses = new List<EmployeeVM>();
-                //string id = User.Identity.GetUserId();
-                //foreach (var course in db.Courses)
-                //{
-                //    EmployeeVM evm = new EmployeeVM();
-                //    evm.CourseID = course.CourseID;
-                //    evm.CourseName = course.CourseName;
-                //    evm.Description = course.Description;
-                //    evm.ValidFor = course.ValidFor;
-                //    evm.LessonCount = db.Lessons.Where(x => x.CourseID == course.CourseID).Count();
-                //    List<CourseCompletion> cc = db.CourseCompletions.Where(x => x.CourseID == course.CourseID).ToList();
-                //    foreach (var item in cc)
-                //    {
-                //        if (item.UserID == id)
-                //        {
-                //            evm.DateCompleted = item.DateCompleted;
-                //        }
+            //if (User.IsInRole("Employee"))
+            //{
+            //    //List<EmployeeVM> empCourses = new List<EmployeeVM>();
+            //    //string id = User.Identity.GetUserId();
+            //    //foreach (var course in db.Courses)
+            //    //{
+            //    //    EmployeeVM evm = new EmployeeVM();
+            //    //    evm.CourseID = course.CourseID;
+            //    //    evm.CourseName = course.CourseName;
+            //    //    evm.Description = course.Description;
+            //    //    evm.ValidFor = course.ValidFor;
+            //    //    evm.LessonCount = db.Lessons.Where(x => x.CourseID == course.CourseID).Count();
+            //    //    List<CourseCompletion> cc = db.CourseCompletions.Where(x => x.CourseID == course.CourseID).ToList();
+            //    //    foreach (var item in cc)
+            //    //    {
+            //    //        if (item.UserID == id)
+            //    //        {
+            //    //            evm.DateCompleted = item.DateCompleted;
+            //    //        }
 
-                //    }
-                //    empCourses.Add(evm);
-                //}
-                IEnumerable<EmployeeVM> empCourses = (from c in db.Courses
-                                                      join cc in db.CourseCompletions on c.CourseID equals cc.CourseID
-                                                      join l in db.Lessons on c.CourseID equals l.CourseID
-                                                      select new EmployeeVM
-                                                      {
-                                                          CourseID = c.CourseID,
-                                                          CourseName = c.CourseName,
-                                                          Description = c.Description,
-                                                          ValidFor = c.ValidFor,
-                                                          LessonCount = db.Lessons.Where(x => x.CourseID == c.CourseID).Count(),
-                                                          DateCompleted = cc.DateCompleted
-                                                      }).ToList();
+            //    //    }
+            //    //    empCourses.Add(evm);
+            //    //}
+            //    IEnumerable<EmployeeVM> empCourses = (from c in db.Courses
+            //                                          join cc in db.CourseCompletions on c.CourseID equals cc.CourseID
+            //                                          join l in db.Lessons on c.CourseID equals l.CourseID
+            //                                          select new EmployeeVM
+            //                                          {
+            //                                              CourseID = c.CourseID,
+            //                                              CourseName = c.CourseName,
+            //                                              Description = c.Description,
+            //                                              ValidFor = c.ValidFor,
+            //                                              LessonCount = db.Lessons.Where(x => x.CourseID == c.CourseID).Count(),
+            //                                              DateCompleted = cc.DateCompleted
+            //                                          }).ToList();
 
-                return RedirectToAction("EmpIndex", empCourses);
+            //    return RedirectToAction("EmpIndex", empCourses);
 
-            }
+            //}
             return View(db.Courses);
         }
 
