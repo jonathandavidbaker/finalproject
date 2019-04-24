@@ -68,31 +68,6 @@ namespace FinalProject.UI.Controllers
                 return HttpNotFound();
             }
 
-            if (User.IsInRole("Employee"))
-            {
-                int lessoncount = db.Lessons.Where(x => x.CourseID == course.CourseID).Count();//<--number of lessons in the given course
-                int lessonviewcount = 0;
-                foreach (var lesson in db.Lessons.Where(x => x.CourseID == course.CourseID))
-                {
-                    foreach (var lessonview in db.LessonViews.Where(x => x.UserID == User.Identity.GetUserId()))
-                    {
-                        if (lessonview.LessonID == lesson.LessonID)
-                        {
-                            lessonviewcount++;
-                        }
-                    }
-                }
-                if (lessonviewcount == lessoncount)
-                {
-                    CourseCompletion newCourseCompletion = new CourseCompletion();
-                    newCourseCompletion.UserID = User.Identity.GetUserId();
-                    newCourseCompletion.CourseID = course.CourseID;
-                    newCourseCompletion.DateCompleted = DateTime.Now;
-
-                    db.CourseCompletions.Add(newCourseCompletion);
-                    db.SaveChanges();
-                }
-            }
             return View(course);
         }
 

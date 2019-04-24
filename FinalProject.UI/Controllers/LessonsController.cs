@@ -42,11 +42,34 @@ namespace FinalProject.UI.Controllers
                 newLessonView.DateViewed = DateTime.Now;
                 newLessonView.UserID = User.Identity.GetUserId();
                 newLessonView.LessonID = (int)id;
-
-                db.LessonViews.Add(newLessonView);
-                db.SaveChanges();
-
                 
+                if (db.LessonViews.Where(x => x.UserID == User.Identity.GetUserId()).Where(y => y.LessonID == newLessonView.LessonID).Count() == 0)
+                {
+                    db.LessonViews.Add(newLessonView);
+                }
+
+                int lessonViewCounter = 0;
+                List<Lesson> allLessons = db.Lessons.Where(x => x.CourseID == lesson.CourseID).ToList();
+                foreach (var item in allLessons)
+                {
+                    foreach (var lessonView in db.LessonViews)
+                    {
+                        if (lessonView.UserID == User.Identity.GetUserId() && lessonView.LessonID == item.LessonID)
+                        {
+                            lessonViewCounter++;
+                            if (lessonViewCounter == allLessons.Count)
+                            {
+                                CourseCompletion newCourseCompletion = new CourseCompletion();
+                                newCourseCompletion.UserID = User.Identity.GetUserId();
+                                newCourseCompletion.CourseID = item.CourseID;
+                                newCourseCompletion.DateCompleted = DateTime.Now;
+
+                                db.CourseCompletions.Add(newCourseCompletion);
+                            }
+                        }
+                    }
+                }
+                db.SaveChanges();
             }
 
 
