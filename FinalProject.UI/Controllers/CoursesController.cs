@@ -19,65 +19,25 @@ namespace FinalProject.UI.Controllers
         // GET: Courses
         public ActionResult Index()
         {
-            //if (User.IsInRole("Employee"))
-            //{
-            //    //List<EmployeeVM> empCourses = new List<EmployeeVM>();
-            //    //string id = User.Identity.GetUserId();
-            //    //foreach (var course in db.Courses)
-            //    //{
-            //    //    EmployeeVM evm = new EmployeeVM();
-            //    //    evm.CourseID = course.CourseID;
-            //    //    evm.CourseName = course.CourseName;
-            //    //    evm.Description = course.Description;
-            //    //    evm.ValidFor = course.ValidFor;
-            //    //    evm.LessonCount = db.Lessons.Where(x => x.CourseID == course.CourseID).Count();
-            //    //    List<CourseCompletion> cc = db.CourseCompletions.Where(x => x.CourseID == course.CourseID).ToList();
-            //    //    foreach (var item in cc)
-            //    //    {
-            //    //        if (item.UserID == id)
-            //    //        {
-            //    //            evm.DateCompleted = item.DateCompleted;
-            //    //        }
-
-            //    //    }
-            //    //    empCourses.Add(evm);
-            //    //}
-            //    IEnumerable<EmployeeVM> empCourses = (from c in db.Courses
-            //                                          join cc in db.CourseCompletions on c.CourseID equals cc.CourseID
-            //                                          join l in db.Lessons on c.CourseID equals l.CourseID
-            //                                          select new EmployeeVM
-            //                                          {
-            //                                              CourseID = c.CourseID,
-            //                                              CourseName = c.CourseName,
-            //                                              Description = c.Description,
-            //                                              ValidFor = c.ValidFor,
-            //                                              LessonCount = db.Lessons.Where(x => x.CourseID == c.CourseID).Count(),
-            //                                              DateCompleted = cc.DateCompleted
-            //                                          }).ToList();
-
-            //    return RedirectToAction("EmpIndex", empCourses);
-
-            //}
             return View(db.Courses);
-        }
-
-        public ActionResult EmpIndex(IEnumerable<EmployeeVM> empCourses)
-        {
-            return View(empCourses);
         }
 
         public ActionResult CompletedCourses()
         {
-            List<Course> courseslist = new List<Course>();
-
-            foreach (var item in db.CourseCompletions)
+            List<EmployeeVM> empCourses = new List<EmployeeVM>();
+            string id = User.Identity.GetUserId();
+            foreach (var course in db.CourseCompletions.Include(c => c.Course))
             {
-                if (item.UserID == User.Identity.GetUserId())
-                {
-                    courseslist.Add(db.Courses.Find(item.CourseID));
-                }
+                EmployeeVM evm = new EmployeeVM();
+                evm.CourseID = course.CourseID;
+                evm.CourseName = course.Course.CourseName;
+                evm.Description = course.Course.Description;
+                evm.ValidFor = course.Course.ValidFor;
+                evm.LessonCount = db.Lessons.Where(x => x.CourseID == course.CourseID).Count();
+                evm.DateCompleted = course.DateCompleted;
+                empCourses.Add(evm);
             }
-            return View(courseslist);
+            return View(empCourses);
         }
 
         // GET: Courses/Details/5

@@ -1,12 +1,18 @@
-﻿using System.Web.Mvc;
+﻿using FinalProject.DATA;
+using Microsoft.AspNet.Identity;
+using System.Web.Mvc;
 
 namespace IdentitySample.Controllers
 {
     public class HomeController : Controller
     {
+        FinalProjectEntities db = new FinalProjectEntities();
+        
         [HttpGet]
         public ActionResult Index()
         {
+            //var user = db.Employees.Find(User.Identity.GetUserId());
+            //ViewBag.UserName = user.FirstName;
             return View();
         }
 
