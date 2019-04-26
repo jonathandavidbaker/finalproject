@@ -26,10 +26,10 @@ namespace FinalProject.UI.Controllers
         {
             List<EmployeeVM> empCourses = new List<EmployeeVM>();
             string id = User.Identity.GetUserId();
-            foreach (var course in db.CourseCompletions.Include(c => c.Course))
+            foreach (var course in db.CourseCompletions.Where(cc=>cc.UserID == id).Include(c => c.Course))
             {
                 EmployeeVM evm = new EmployeeVM();
-                evm.CourseID = course.CourseID;
+                evm.UserID = id;
                 evm.CourseName = course.Course.CourseName;
                 evm.Description = course.Course.Description;
                 evm.ValidFor = course.Course.ValidFor;

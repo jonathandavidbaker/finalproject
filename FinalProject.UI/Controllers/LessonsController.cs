@@ -8,6 +8,10 @@ using System.Web;
 using System.Web.Mvc;
 using FinalProject.DATA;
 using Microsoft.AspNet.Identity;
+using System.Web.Security;
+using System.Net.Mail;
+using Microsoft.AspNet.Identity.Owin;
+using IdentitySample.Models;
 
 namespace FinalProject.UI.Controllers
 {
@@ -35,18 +39,15 @@ namespace FinalProject.UI.Controllers
                 return HttpNotFound();
             }
 
-
+            string userid = User.Identity.GetUserId();
             if (User.IsInRole("Employee"))
             {
                 LessonView newLessonView = new LessonView();
                 newLessonView.DateViewed = DateTime.Now;
                 newLessonView.UserID = User.Identity.GetUserId();
                 newLessonView.LessonID = (int)id;
-                
-                //if (db.LessonViews.Where(x => x.UserID == User.Identity.GetUserId()).Where(y => y.LessonID == newLessonView.LessonID).Count() == 0)
-                //{
-                    db.LessonViews.Add(newLessonView);
-                //}
+
+                db.LessonViews.Add(newLessonView);
 
                 int lessonViewCounter = 0;
                 List<Lesson> allLessons = db.Lessons.Where(x => x.CourseID == lesson.CourseID).ToList();
@@ -57,7 +58,23 @@ namespace FinalProject.UI.Controllers
                         if (lessonView.UserID == User.Identity.GetUserId() && lessonView.LessonID == item.LessonID)
                         {
                             lessonViewCounter++;
-                            if (lessonViewCounter == allLessons.Count)
+                            //foreach (var cc in db.CourseCompletions.Where(c=>c.UserID == lessonView.UserID && c.CourseID == item.CourseID))
+                            //{
+                            //    if (cc.DateCompleted.AddYears(item.Course.ValidFor) <= DateTime.Now.AddMonths(1))
+                            //    {
+                            //        if (lessonViewCounter == allLessons.Count)
+                            //        {
+                            //            CourseCompletion newCourseCompletion = new CourseCompletion();
+                            //            newCourseCompletion.UserID = User.Identity.GetUserId();
+                            //            newCourseCompletion.CourseID = item.CourseID;
+                            //            newCourseCompletion.DateCompleted = DateTime.Now;
+
+                            //            db.CourseCompletions.Add(newCourseCompletion);
+                            //        }
+                            //    }
+                            //}
+
+                            if ((lessonViewCounter == allLessons.Count) && (db.CourseCompletions.Where(cc=>cc.UserID == lessonView.UserID && cc.CourseID == item.CourseID).Count() == 0))
                             {
                                 CourseCompletion newCourseCompletion = new CourseCompletion();
                                 newCourseCompletion.UserID = User.Identity.GetUserId();
@@ -65,13 +82,33 @@ namespace FinalProject.UI.Controllers
                                 newCourseCompletion.DateCompleted = DateTime.Now;
 
                                 db.CourseCompletions.Add(newCourseCompletion);
+
+                                Employee e = db.Employees.Find(newCourseCompletion.UserID);
+                                
+                                var UserManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                                var user = UserManager.FindById(e.ManagerID);
+
+                                string body = $"{e.FirstName} {e.LastName} has completed the course {item.Course.CourseName} as of {newCourseCompletion.DateCompleted:MM/dd/yyyy}.";
+
+                                MailMessage msg = new MailMessage("no-reply@jdbaker.net",
+                                                                  //"jon.david.baker@gmail.com",
+                                                                  user.Email,
+                                                                  "Email from Agency - " + e.FirstName + " " + e.LastName + " completed a course.",
+                                                                  body);                                 
+                                
+                                SmtpClient client = new SmtpClient("mail.jdbaker.net");
+                                client.Credentials = new NetworkCredential("no-reply@jdbaker.net", "pr$aM*Y*38V");
+                                
+                                using (client)
+                                {
+                                    client.Send(msg);
+                                }
                             }
                         }
                     }
                 }
                 db.SaveChanges();
             }
-
 
             return View(lesson);
         }
@@ -185,7 +222,7 @@ namespace FinalProject.UI.Controllers
                     {
                         vid = lesson.VideoURL.Substring(v + 2, amp - (v + 2));
                     }
-                    lesson.VideoURL = vid; 
+                    lesson.VideoURL = vid;
                 }
                 db.Entry(lesson).State = EntityState.Modified;
                 db.SaveChanges();

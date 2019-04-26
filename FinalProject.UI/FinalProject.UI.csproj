@@ -187,6 +187,7 @@
     <Compile Include="Models\AdminViewModel.cs" />
     <Compile Include="Models\EmployeeVM.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\ManagerVM.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -534,7 +535,9 @@
     <Content Include="_archive\sass\_bootstrap-mincer.scss" />
     <Content Include="_archive\sass\_bootstrap-sprockets.scss" />
     <Content Include="Views\Shared\_OriginalLayout.cshtml" />
+    <Content Include="Views\Employees\ManagerEmployeeView.cshtml" />
     <Content Include="Views\Courses\CompletedCourses.cshtml" />
+    <Content Include="Views\Employees\ManagerEmployeeDetailView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

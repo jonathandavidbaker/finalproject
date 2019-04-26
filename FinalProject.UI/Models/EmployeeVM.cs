@@ -9,7 +9,7 @@ namespace FinalProject.UI.Models
     public class EmployeeVM
     {
         [Key]
-        public int CourseID { get; set; }
+        public string UserID { get; set; }
 
         [Display(Name = "Course")]
         public string CourseName { get; set; }
