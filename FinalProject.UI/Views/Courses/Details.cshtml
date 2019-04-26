@@ -1,50 +1,60 @@
-﻿@model FinalProject.DATA.Course
+﻿@model IEnumerable<FinalProject.DATA.Lesson>
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = ViewBag.CourseName;
 }
 
-<h2>Details</h2>
-
-<div>
-    <h4>Course</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.CourseName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CourseName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-
-        <dt>
+<p>@ViewBag.CourseDescription</p>
+<p>This course is valid for @ViewBag.ValidFor years before it will need to be renewed.</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.LessonTitle)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Introduction)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.VideoURL)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PdfFileName)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Course.CourseName)
+        </th>
+        <th></th>
+    </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.IsActive)
-        </dd>
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.LessonTitle)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Introduction)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.VideoURL)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PdfFileName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IsActive)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Course.CourseName)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", "Lessons", new { id=item.LessonID }, null ) |
+            @Html.ActionLink("Details", "Details", "Lessons", new { id=item.LessonID }, null) |
+            @Html.ActionLink("Delete", "Delete", "Lessons", new { id=item.LessonID }, null)
+        </td>
+    </tr>
+}
 
-        <dt>
-            @Html.DisplayNameFor(model => model.ValidFor)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ValidFor)
-        </dd>
-
-    </dl>
-</div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.CourseID }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+</table>

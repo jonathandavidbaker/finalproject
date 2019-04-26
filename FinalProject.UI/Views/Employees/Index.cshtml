@@ -15,7 +15,7 @@
             @Html.DisplayNameFor(model => model.LastName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Employee1.FirstName)
+            Manager
         </th>
         <th></th>
     </tr>
@@ -31,7 +31,11 @@
                     @Html.DisplayFor(modelItem => item.LastName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Employee1.FirstName)
+                    @if (item.ManagerID != null)
+                    {
+                        @item.Employee1.FirstName@: @item.Employee1.LastName
+                    }
+
                 </td>
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.UserID }) |

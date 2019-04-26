@@ -1,13 +1,7 @@
-﻿
-@model dynamic
-
+﻿@model dynamic
 @{
-    ViewBag.Title = ViewBag.Name;
+    ViewBag.Title = "EmployeeProgress";
 }
-
-<h2>@ViewBag.Name</h2>
-<h3>@ViewBag.Email</h3>
-
 
 <h1>Incomplete Courses</h1>
 <table class="table">
@@ -21,7 +15,7 @@
         <th>
             Percent Complete
         </th>
-        
+
         <th></th>
     </tr>
 
@@ -39,8 +33,8 @@
             </td>
             <td>
                 @*@Html.ActionLink("Edit", "Edit", new { id = item.UserID }) |
-                @Html.ActionLink("Details", "Details", new { id = item.UserID }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.UserID })*@
+                    @Html.ActionLink("Details", "Details", new { id = item.UserID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.UserID })*@
             </td>
         </tr>
     }
@@ -95,3 +89,4 @@
     }
 
 </table>
+

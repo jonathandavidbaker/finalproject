@@ -32,7 +32,7 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @*<a href="~/Lessons/" + @item.Lessons.LessonID>View Lessons</a>*@
+               @Html.ActionLink("View Lessons", "Details", new { id = item.CourseID })
                 
             </td>
             <td>

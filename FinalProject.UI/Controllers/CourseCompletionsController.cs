@@ -7,6 +7,9 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using FinalProject.DATA;
+using Microsoft.AspNet.Identity;
+using FinalProject.UI.Models;
+using System.Dynamic;
 
 namespace FinalProject.UI.Controllers
 {
@@ -19,6 +22,45 @@ namespace FinalProject.UI.Controllers
         {
             var courseCompletions = db.CourseCompletions.Include(c => c.Course);
             return View(courseCompletions.ToList());
+        }
+
+        public ActionResult EmployeeProgress()
+        {
+            var id = User.Identity.GetUserId();
+            List<EmployeeVM> completeCourses = new List<EmployeeVM>();
+
+            foreach (var course in db.CourseCompletions.Where(cc => cc.UserID == id).Include(c => c.Course))
+            {
+                EmployeeVM evm = new EmployeeVM();
+                evm.UserID = id;
+                evm.CourseName = course.Course.CourseName;
+                evm.Description = course.Course.Description;
+                evm.ValidFor = course.Course.ValidFor;
+                evm.LessonCount = db.Lessons.Where(x => x.CourseID == course.CourseID).Count();
+                evm.DateCompleted = course.DateCompleted;
+                completeCourses.Add(evm);
+            }
+
+            List<IncompleteCourseVM> incompleteCourses = new List<IncompleteCourseVM>();
+
+            foreach (var course in db.Courses)
+            {
+                if (db.CourseCompletions.Where(c => c.UserID == id && c.CourseID == course.CourseID).Count() == 0)
+                {
+                    IncompleteCourseVM icvm = new IncompleteCourseVM();
+                    icvm.CourseID = course.CourseID;
+                    icvm.CourseName = course.CourseName;
+                    icvm.TotalLessons = db.Lessons.Where(c => c.CourseID == course.CourseID).Count();
+                    icvm.LessonsComplete = db.LessonViews.Where(u => u.UserID == id && u.Lesson.CourseID == course.CourseID).Count();
+                    incompleteCourses.Add(icvm);
+                }
+            }
+
+            dynamic empCourses = new ExpandoObject();
+            empCourses.Incomplete = incompleteCourses;
+            empCourses.Complete = completeCourses;
+
+            return View(empCourses);
         }
 
         // GET: CourseCompletions/Details/5

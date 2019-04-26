@@ -53,7 +53,13 @@ namespace FinalProject.UI.Controllers
                 return HttpNotFound();
             }
 
-            return View(course);
+            List<Lesson> courseLessons = db.Lessons.Where(c => c.CourseID == id).ToList();
+
+            ViewBag.CourseName = course.CourseName;
+            ViewBag.CourseDescription = course.Description;
+            ViewBag.ValidFor = course.ValidFor;
+
+            return View(courseLessons);
         }
 
         // GET: Courses/Create

@@ -11,6 +11,8 @@ using Microsoft.AspNet.Identity;
 using FinalProject.UI.Models;
 using System.Web.Security;
 using IdentitySample.Models;
+using System.Dynamic;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace FinalProject.UI.Controllers
 {
@@ -86,7 +88,7 @@ namespace FinalProject.UI.Controllers
 
                 
 
-                List<EmployeeVM> empCourses = new List<EmployeeVM>();
+                List<EmployeeVM> completeCourses = new List<EmployeeVM>();
 
                 foreach (var course in db.CourseCompletions.Where(cc => cc.UserID == id).Include(c => c.Course))
                 {
@@ -97,9 +99,30 @@ namespace FinalProject.UI.Controllers
                     evm.ValidFor = course.Course.ValidFor;
                     evm.LessonCount = db.Lessons.Where(x => x.CourseID == course.CourseID).Count();
                     evm.DateCompleted = course.DateCompleted;
-                    empCourses.Add(evm);
+                    completeCourses.Add(evm);
                 }
-                TempData["employee"] = empCourses;
+                TempData["completeCourses"] = completeCourses;
+
+                List<IncompleteCourseVM> incompleteCourses = new List<IncompleteCourseVM>();
+
+                foreach (var course in db.Courses)
+                {
+                    if (db.CourseCompletions.Where(c=>c.UserID == id && c.CourseID == course.CourseID).Count() == 0)
+                    {
+                        IncompleteCourseVM icvm = new IncompleteCourseVM();
+                        icvm.CourseID = course.CourseID;
+                        icvm.CourseName = course.CourseName;
+                        icvm.TotalLessons = db.Lessons.Where(c => c.CourseID == course.CourseID).Count();
+                        icvm.LessonsComplete = db.LessonViews.Where(u => u.UserID == id && u.Lesson.CourseID == course.CourseID).Count();
+                        incompleteCourses.Add(icvm);
+                    }
+                }
+                TempData["incompleteCourses"] = incompleteCourses;
+                TempData["Name"] = employee.FirstName + " " + employee.LastName;
+                var UserManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                var user = UserManager.FindById(employee.UserID);
+                TempData["Email"] = user.Email;
+
                 return RedirectToAction("ManagerEmployeeDetailView");
             }
 
@@ -108,10 +131,14 @@ namespace FinalProject.UI.Controllers
 
         public ActionResult ManagerEmployeeDetailView()
         {
-            //Employee employee = db.Employees.Find(id);
-            //ViewBag.Name = employee.FirstName + " " + employee.LastName;
-            var emp = TempData["employee"];
-            return View(emp);
+            
+            ViewBag.Name = TempData["Name"];
+            ViewBag.Email = TempData["Email"];
+            dynamic empCourses = new ExpandoObject();
+            empCourses.Incomplete = TempData["incompleteCourses"];
+            empCourses.Complete = TempData["completeCourses"];
+            
+            return View(empCourses);
         }
 
         // GET: Employees/Create

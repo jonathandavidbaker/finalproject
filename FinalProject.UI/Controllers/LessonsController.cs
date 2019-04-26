@@ -224,11 +224,12 @@ namespace FinalProject.UI.Controllers
                     }
                     lesson.VideoURL = vid;
                 }
+                
                 db.Entry(lesson).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.CourseID = new SelectList(db.Courses, "CourseID", "CourseName", lesson.CourseID);
+            //ViewBag.CourseID = new SelectList(db.Courses, "CourseID", "CourseName", lesson.CourseID);
             return View(lesson);
         }
 

@@ -66,6 +66,7 @@ namespace FinalProject.DATA
         public string LastName { get; set; }
 
         [Display(Name = "Manager")]
+        [DisplayFormat(NullDisplayText = "N/A")]
         public string ManagerID { get; set; }
     }
 

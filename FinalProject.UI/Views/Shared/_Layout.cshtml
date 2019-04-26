@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Orange &mdash; Free Website Template, Free HTML5 Template by FreeHTML5.co</title>
+    <title>Agency - @ViewBag.Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Free HTML5 Website Template by FreeHTML5.co" />
     <meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
@@ -59,21 +59,31 @@
                 <div class="row">
                     <div class="col-xs-5 text-right menu-1">
                         <ul>
+                            @if (User.IsInRole("Manager"))
+                            {
+                                <li><a href="@Url.Action("Index", "Employees")">My Staff</a></li>
+                            }
+                            else if (User.IsInRole("Admin"))
+                            {
+                                <li><a href="@Url.Action("Index", "Employees")">All Employees</a></li>
+                            }
+                            else
+                            {
+                                <li><a href="@Url.Action("EmployeeProgress", "CourseCompletions")">My Progress</a></li>
+                            }
                             <li><a href="@Url.Action("Index", "Courses")">All Courses</a></li>
-                            <li><a href="@Url.Action("CompletedCourses", "Courses")">Completed Courses</a></li>                            
                         </ul>
                     </div>
                     <div class="col-xs-2 text-center">
                         <div id="fh5co-logo"><a href="@Url.Action("Index", "Home")">Agency.</a></div>
                     </div>
                     <div class="col-xs-5 text-left menu-1">
-                        <ul>                                                      
+                        <ul>
                             <li><a href="@Url.Action("Contact", "Home")">Contact</a></li>
                             @Html.Partial("_LoginPartial")
                         </ul>
                     </div>
                 </div>
-
             </div>
         </nav>
         <header id="fh5co-header" class="fh5co-cover fh5co-cover-sm" role="banner" style="background-image:url(../../content/images/img_bg_2.jpg);">
@@ -95,14 +105,11 @@
                 <div class="about-content">
                     <div class="row animate-box">
                         @RenderBody()
-
                     </div>
                 </div>
-                
-                
             </div>
         </div>
-        
+
         <footer id="fh5co-footer" role="contentinfo">
             <div class="container">
                 <div class="row row-pb-md">
@@ -181,9 +188,9 @@
                 var pController = fullPath.split('/');
                 if (aController[1] == pController[0]) {
                     $(this).addClass('active');
-                }                
-                if (aController[1] == 'Home' && window.location.pathname != fullAnchor) {                    
-                    $(this).removeClass('active');                   
+                }
+                if (aController[1] == 'Home' && window.location.pathname != fullAnchor) {
+                    $(this).removeClass('active');
                 }
             });
         });
