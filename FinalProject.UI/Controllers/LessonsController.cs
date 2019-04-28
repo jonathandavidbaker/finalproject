@@ -42,39 +42,35 @@ namespace FinalProject.UI.Controllers
             string userid = User.Identity.GetUserId();
             if (User.IsInRole("Employee"))
             {
-                LessonView newLessonView = new LessonView();
-                newLessonView.DateViewed = DateTime.Now;
-                newLessonView.UserID = User.Identity.GetUserId();
-                newLessonView.LessonID = (int)id;
+                if (db.LessonViews.Where(lv => lv.UserID == userid && lv.LessonID == id).Count() == 0)
+                {
+                    LessonView newLessonView = new LessonView();
+                    newLessonView.DateViewed = DateTime.Now;
+                    newLessonView.UserID = User.Identity.GetUserId();
+                    newLessonView.LessonID = (int)id;
 
-                db.LessonViews.Add(newLessonView);
+                    db.LessonViews.Add(newLessonView);
+                }
+                else
+                {
+                    LessonView updateLessonView = db.LessonViews.Where(lv => lv.UserID == userid && lv.LessonID == id).Single();
+                    updateLessonView.DateViewed = DateTime.Now;
+
+                    db.Entry(updateLessonView).State = EntityState.Modified;
+                }
+
 
                 int lessonViewCounter = 0;
                 List<Lesson> allLessons = db.Lessons.Where(x => x.CourseID == lesson.CourseID).ToList();
                 foreach (var item in allLessons)
                 {
-                    foreach (var lessonView in db.LessonViews)
+                    foreach (var lessonView in db.LessonViews.Where(lv => lv.UserID == userid && lv.LessonID == item.LessonID))
                     {
-                        if (lessonView.UserID == User.Identity.GetUserId() && lessonView.LessonID == item.LessonID)
+                        lessonViewCounter++;
+
+                        if (lessonViewCounter == allLessons.Count)
                         {
-                            lessonViewCounter++;
-                            //foreach (var cc in db.CourseCompletions.Where(c=>c.UserID == lessonView.UserID && c.CourseID == item.CourseID))
-                            //{
-                            //    if (cc.DateCompleted.AddYears(item.Course.ValidFor) <= DateTime.Now.AddMonths(1))
-                            //    {
-                            //        if (lessonViewCounter == allLessons.Count)
-                            //        {
-                            //            CourseCompletion newCourseCompletion = new CourseCompletion();
-                            //            newCourseCompletion.UserID = User.Identity.GetUserId();
-                            //            newCourseCompletion.CourseID = item.CourseID;
-                            //            newCourseCompletion.DateCompleted = DateTime.Now;
-
-                            //            db.CourseCompletions.Add(newCourseCompletion);
-                            //        }
-                            //    }
-                            //}
-
-                            if ((lessonViewCounter == allLessons.Count) && (db.CourseCompletions.Where(cc=>cc.UserID == lessonView.UserID && cc.CourseID == item.CourseID).Count() == 0))
+                            if (db.CourseCompletions.Where(cc => cc.UserID == lessonView.UserID && cc.CourseID == item.CourseID).Count() == 0)
                             {
                                 CourseCompletion newCourseCompletion = new CourseCompletion();
                                 newCourseCompletion.UserID = User.Identity.GetUserId();
@@ -82,29 +78,38 @@ namespace FinalProject.UI.Controllers
                                 newCourseCompletion.DateCompleted = DateTime.Now;
 
                                 db.CourseCompletions.Add(newCourseCompletion);
+                            }
+                            else
+                            {
+                                CourseCompletion updateCourseCompletion = db.CourseCompletions.Where(cc => cc.UserID == lessonView.UserID && cc.CourseID == item.CourseID).Single();
+                                updateCourseCompletion.DateCompleted = DateTime.Now;
 
-                                Employee e = db.Employees.Find(newCourseCompletion.UserID);
-                                
-                                var UserManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-                                var user = UserManager.FindById(e.ManagerID);
+                                db.Entry(updateCourseCompletion).State = EntityState.Modified;
+                            }
 
-                                string body = $"{e.FirstName} {e.LastName} has completed the course {item.Course.CourseName} as of {newCourseCompletion.DateCompleted:MM/dd/yyyy}.";
 
-                                MailMessage msg = new MailMessage("no-reply@jdbaker.net",
-                                                                  //"jon.david.baker@gmail.com",
-                                                                  user.Email,
-                                                                  "Email from Agency - " + e.FirstName + " " + e.LastName + " completed a course.",
-                                                                  body);                                 
-                                
-                                SmtpClient client = new SmtpClient("mail.jdbaker.net");
-                                client.Credentials = new NetworkCredential("no-reply@jdbaker.net", "pr$aM*Y*38V");
-                                
-                                using (client)
-                                {
-                                    client.Send(msg);
-                                }
+                            Employee e = db.Employees.Find(userid);
+
+                            var UserManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                            var user = UserManager.FindById(e.ManagerID);
+
+                            string body = $"{e.FirstName} {e.LastName} has completed the course {item.Course.CourseName} as of {DateTime.Now:MM/dd/yyyy}.";
+
+                            MailMessage msg = new MailMessage("no-reply@jdbaker.net",
+                                                              //"jon.david.baker@gmail.com",
+                                                              user.Email,
+                                                              "Email from Agency - " + e.FirstName + " " + e.LastName + " completed a course.",
+                                                              body);
+
+                            SmtpClient client = new SmtpClient("mail.jdbaker.net");
+                            client.Credentials = new NetworkCredential("no-reply@jdbaker.net", "pr$aM*Y*38V");
+
+                            using (client)
+                            {
+                                client.Send(msg);
                             }
                         }
+
                     }
                 }
                 db.SaveChanges();
@@ -224,7 +229,7 @@ namespace FinalProject.UI.Controllers
                     }
                     lesson.VideoURL = vid;
                 }
-                
+
                 db.Entry(lesson).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
