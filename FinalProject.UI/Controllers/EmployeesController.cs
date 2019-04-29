@@ -83,11 +83,6 @@ namespace FinalProject.UI.Controllers
             }
             if (User.IsInRole("Manager"))
             {
-                ViewBag.Name = employee.FirstName + " " + employee.LastName;
-                //ViewBag.Email = Membership.GetUser(id).UserName;
-
-                
-
                 List<EmployeeVM> completeCourses = new List<EmployeeVM>();
 
                 foreach (var course in db.CourseCompletions.Where(cc => cc.UserID == id).Include(c => c.Course))
