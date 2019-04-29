@@ -1,11 +1,8 @@
 ﻿@model IEnumerable<FinalProject.UI.Models.ManagerVM>
 
 @{
-    ViewBag.Title = "ManagerEmployeeView";
+    ViewBag.Title = "My Staff";
 }
-
-<h2>ManagerEmployeeView</h2>
-
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
@@ -35,9 +32,7 @@
             @Html.DisplayFor(modelItem => item.ExpCourses)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.UserID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.UserID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.UserID })
+            @Html.ActionLink("View Progress Report", "Details", new { id=item.UserID }) 
         </td>
     </tr>
 }

@@ -1,12 +1,8 @@
 ﻿@model FinalProject.DATA.Lesson
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Edit " + Model.LessonTitle;
 }
-
-<h2>Edit</h2>
-
-
 @using (Html.BeginForm("Edit", "Lessons", FormMethod.Post, new { @enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()

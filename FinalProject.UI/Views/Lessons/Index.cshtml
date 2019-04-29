@@ -1,11 +1,8 @@
 ﻿@model IEnumerable<FinalProject.DATA.Lesson>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "All Lessons";
 }
-
-<h2>Index</h2>
-
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
@@ -18,13 +15,10 @@
             @Html.DisplayNameFor(model => model.Introduction)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.VideoURL)
+            Video?
         </th>
         <th>
             @Html.DisplayNameFor(model => model.PdfFileName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IsActive)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Course.CourseName)
@@ -41,13 +35,13 @@
             @Html.DisplayFor(modelItem => item.Introduction)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.VideoURL)
+            @if (item.VideoURL != null)
+            {
+                @:Yes
+            }
         </td>
         <td>
             <a href="@Url.Content("~/Content/Files/" + @item.PdfFileName)" target="_blank">Click to View Document</a>
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.IsActive)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Course.CourseName)

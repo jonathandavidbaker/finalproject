@@ -1,42 +1,86 @@
-﻿@model FinalProject.DATA.Employee
+﻿
+@model dynamic
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = ViewBag.Name;
 }
 
-<h2>Details</h2>
+<h2>@ViewBag.Name</h2>
+<h3>@ViewBag.Email</h3>
 
-<div>
-    <h4>Employee</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
+<h1>Incomplete Courses</h1>
+<table class="table">
+    <tr>
+        <th>
+            Course
+        </th>
+        <th>
+            Lessons Remaining
+        </th>
+        <th>
+            Percent Complete
+        </th>
+        
+        <th></th>
+    </tr>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
+    @foreach (var item in Model.Incomplete)
+    {
+        <tr>
+            <td>
+                @item.CourseName
+            </td>
+            <td>
+                @item.LessonsRemaining
+            </td>
+            <td>
+                @item.PercentComplete%
+            </td>
+        </tr>
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
+</table>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Employee1.FirstName)
-        </dt>
+<h1>Completed Courses</h1>
+<table class="table">
+    <tr>
+        <th>
+            Course
+        </th>
+        <th>
+            Description
+        </th>
+        <th>
+            Years Valid
+        </th>
+        <th>
+            Date Completed
+        </th>
+        <th>
+            Expiration Date
+        </th>
+    </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.Employee1.FirstName)
-        </dd>
+    @foreach (var item in Model.Complete)
+    {
+        <tr>
+            <td>
+                @item.CourseName
+            </td>
+            <td>
+                @item.Description
+            </td>
+            <td>
+                @item.ValidFor
+            </td>
+            <td>
+                @item.DateCompleted.ToString("MM/dd/yyyy")
+            </td>
+            <td>
+                @item.ExpirationDate.ToString("MM/dd/yyyy")
+            </td>
+        </tr>
+    }
 
-    </dl>
-</div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.UserID }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+</table>

@@ -15,46 +15,56 @@
             @Html.DisplayNameFor(model => model.Introduction)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.VideoURL)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PdfFileName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IsActive)
+            Video?
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Course.CourseName)
         </th>
         <th></th>
+
+
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.LessonTitle)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Introduction)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.VideoURL)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PdfFileName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.IsActive)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Course.CourseName)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", "Lessons", new { id=item.LessonID }, null ) |
-            @Html.ActionLink("Details", "Details", "Lessons", new { id=item.LessonID }, null) |
-            @Html.ActionLink("Delete", "Delete", "Lessons", new { id=item.LessonID }, null)
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        if (User.IsInRole("Admin") || item.IsActive)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LessonTitle)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Introduction)
+                </td>
+                <td>
+                    @if (item.VideoURL != null)
+                    {
+                        @:Yes
+                    } else
+                    {
+                        @:No
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Course.CourseName)
+                </td>
+                <td>
+                    @if (User.IsInRole("Admin"))
+                    {
+
+                        @Html.ActionLink("Edit", "Edit", "Lessons", new { id = item.LessonID }, null) @:|
+                    }
+
+                    @Html.ActionLink("View Lesson", "Details", "Lessons", new { id = item.LessonID }, null)
+                    @if (User.IsInRole("Admin"))
+                    {
+                        @:|
+                        @Html.ActionLink("Delete", "Delete", "Lessons", new { id = item.LessonID }, null)
+                    }
+                </td>
+            </tr>
+        }
+
+    }
 
 </table>

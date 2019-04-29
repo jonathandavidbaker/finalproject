@@ -22,24 +22,6 @@ namespace FinalProject.UI.Controllers
             return View(db.Courses);
         }
 
-        public ActionResult CompletedCourses()
-        {
-            List<EmployeeVM> empCourses = new List<EmployeeVM>();
-            string id = User.Identity.GetUserId();
-            foreach (var course in db.CourseCompletions.Where(cc=>cc.UserID == id).Include(c => c.Course))
-            {
-                EmployeeVM evm = new EmployeeVM();
-                evm.UserID = id;
-                evm.CourseName = course.Course.CourseName;
-                evm.Description = course.Course.Description;
-                evm.ValidFor = course.Course.ValidFor;
-                evm.LessonCount = db.Lessons.Where(x => x.CourseID == course.CourseID).Count();
-                evm.DateCompleted = course.DateCompleted;
-                empCourses.Add(evm);
-            }
-            return View(empCourses);
-        }
-
         // GET: Courses/Details/5
         public ActionResult Details(int? id)
         {
@@ -53,7 +35,7 @@ namespace FinalProject.UI.Controllers
                 return HttpNotFound();
             }
 
-            List<Lesson> courseLessons = db.Lessons.Where(c => c.CourseID == id).ToList();
+            List<Lesson> courseLessons = db.Lessons.Where(c => c.CourseID == id && c.IsActive && c.Course.IsActive).ToList();
 
             ViewBag.CourseName = course.CourseName;
             ViewBag.CourseDescription = course.Description;
@@ -63,6 +45,7 @@ namespace FinalProject.UI.Controllers
         }
 
         // GET: Courses/Create
+        [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             return View();
@@ -73,6 +56,7 @@ namespace FinalProject.UI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Create([Bind(Include = "CourseID,CourseName,Description,IsActive,ValidFor")] Course course)
         {
             if (ModelState.IsValid)
@@ -86,6 +70,7 @@ namespace FinalProject.UI.Controllers
         }
 
         // GET: Courses/Edit/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -105,6 +90,7 @@ namespace FinalProject.UI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit([Bind(Include = "CourseID,CourseName,Description,IsActive,ValidFor")] Course course)
         {
             if (ModelState.IsValid)
@@ -117,6 +103,7 @@ namespace FinalProject.UI.Controllers
         }
 
         // GET: Courses/Delete/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -134,6 +121,7 @@ namespace FinalProject.UI.Controllers
         // POST: Courses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult DeleteConfirmed(int id)
         {
             Course course = db.Courses.Find(id);

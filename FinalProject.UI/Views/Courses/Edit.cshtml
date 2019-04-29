@@ -1,11 +1,8 @@
 ﻿@model FinalProject.DATA.Course
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Edit" + Model.CourseName;
 }
-
-<h2>Edit</h2>
-
 
 @using (Html.BeginForm())
 {

@@ -94,6 +94,7 @@ namespace FinalProject.DATA
         public string VideoURL { get; set; }
 
         [StringLength(100, ErrorMessage = "* 100 Characters or fewer")]
+        [Display(Name = "PDF File Name")]
         public string PdfFileName { get; set; }
 
         [Required(ErrorMessage = "* Required")]

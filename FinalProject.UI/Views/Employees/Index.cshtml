@@ -1,11 +1,7 @@
 ﻿@model IEnumerable<FinalProject.DATA.Employee>
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Employees";
 }
-<h2>Index</h2>
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 <table class="table">
     <tr>
         <th>
@@ -38,9 +34,9 @@
 
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.UserID }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.UserID }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.UserID })
+                    @Html.ActionLink("View Progress", "Details", new { id = item.UserID }) |
+                    @Html.ActionLink("Edit Information", "Edit", new { id = item.UserID }) |                    
+                    @Html.ActionLink("Remove Employee", "Delete", new { id = item.UserID })
                 </td>
             </tr>
         }

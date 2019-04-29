@@ -22,11 +22,12 @@ namespace FinalProject.UI.Models
             get { return TotalLessons - LessonsComplete; }
         }
 
+        
         public decimal PercentComplete
         {
             get
             {
-                return ((decimal)LessonsComplete / (decimal)TotalLessons) * 100;
+                return ((decimal)LessonsComplete / (decimal)TotalLessons)*100;
             }
         }
     }

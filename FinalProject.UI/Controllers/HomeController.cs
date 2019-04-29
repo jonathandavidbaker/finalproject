@@ -15,9 +15,15 @@ namespace IdentitySample.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            //var user = db.Employees.Find(User.Identity.GetUserId());
-            //ViewBag.UserName = user.FirstName;
             return View();
+        }
+
+        public ActionResult GetName()
+        {
+            var id = User.Identity.GetUserId();
+            Employee employee = db.Employees.Find(id);
+            //string name = employee.FirstName;
+            return PartialView(employee);
         }
 
         [HttpGet]
@@ -32,8 +38,6 @@ namespace IdentitySample.Controllers
         [HttpGet]
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
-
             return View();
         }
 

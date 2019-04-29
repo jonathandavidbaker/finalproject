@@ -1,13 +1,7 @@
-﻿
-@model dynamic
-
+﻿@model dynamic
 @{
-    ViewBag.Title = ViewBag.Name;
+    ViewBag.Title = "Employee Progress";
 }
-
-<h2>@ViewBag.Name</h2>
-<h3>@ViewBag.Email</h3>
-
 
 <h1>Incomplete Courses</h1>
 <table class="table">
@@ -21,7 +15,6 @@
         <th>
             Percent Complete
         </th>
-        
         <th></th>
     </tr>
 
@@ -35,13 +28,9 @@
                 @item.LessonsRemaining
             </td>
             <td>
-                @item.PercentComplete
+                @item.PercentComplete%
             </td>
-            <td>
-                @*@Html.ActionLink("Edit", "Edit", new { id = item.UserID }) |
-                @Html.ActionLink("Details", "Details", new { id = item.UserID }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.UserID })*@
-            </td>
+            <td><a href="@Url.Action("Details","Courses", new { id = item.CourseID })">Go to Course</a></td>
         </tr>
     }
 
@@ -64,8 +53,7 @@
         </th>
         <th>
             Expiration Date
-        </th>
-        <th></th>
+        </th>        
     </tr>
 
     @foreach (var item in Model.Complete)
@@ -86,12 +74,8 @@
             <td>
                 @item.ExpirationDate.ToString("MM/dd/yyyy")
             </td>
-            <td>
-                @*@Html.ActionLink("Edit", "Edit", new { id=item.UserID }) |
-                    @Html.ActionLink("Details", "Details", new { id=item.UserID }) |
-                    @Html.ActionLink("Delete", "Delete", new { id=item.UserID })*@
-            </td>
         </tr>
     }
 
 </table>
+

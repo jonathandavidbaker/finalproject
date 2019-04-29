@@ -20,6 +20,7 @@ namespace FinalProject.UI.Controllers
         private FinalProjectEntities db = new FinalProjectEntities();
 
         // GET: Lessons
+        [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             var lessons = db.Lessons.Include(l => l.Course);
@@ -107,6 +108,7 @@ namespace FinalProject.UI.Controllers
         }
 
         // GET: Lessons/Create
+        [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             ViewBag.CourseID = new SelectList(db.Courses, "CourseID", "CourseName");
@@ -118,6 +120,7 @@ namespace FinalProject.UI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Create([Bind(Include = "LessonID,LessonTitle,CourseID,Introduction,VideoURL,PdfFileName,IsActive")] Lesson lesson, HttpPostedFileBase pdfFile)
         {
             if (ModelState.IsValid)
@@ -163,6 +166,7 @@ namespace FinalProject.UI.Controllers
         }
 
         // GET: Lessons/Edit/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -183,6 +187,7 @@ namespace FinalProject.UI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit([Bind(Include = "LessonID,LessonTitle,CourseID,Introduction,VideoURL,PdfFileName,IsActive")] Lesson lesson, HttpPostedFileBase pdfFile)
         {
             if (ModelState.IsValid)
@@ -227,6 +232,7 @@ namespace FinalProject.UI.Controllers
         }
 
         // GET: Lessons/Delete/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -244,6 +250,7 @@ namespace FinalProject.UI.Controllers
         // POST: Lessons/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult DeleteConfirmed(int id)
         {
             Lesson lesson = db.Lessons.Find(id);

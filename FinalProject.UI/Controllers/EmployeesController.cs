@@ -15,12 +15,13 @@ using System.Dynamic;
 using Microsoft.AspNet.Identity.Owin;
 
 namespace FinalProject.UI.Controllers
-{
+{    
     public class EmployeesController : Controller
     {
         private FinalProjectEntities db = new FinalProjectEntities();
 
         // GET: Employees
+        [Authorize(Roles = "Admin, Manager")]
         public ActionResult Index()
         {
             if (User.IsInRole("Manager"))
@@ -34,7 +35,7 @@ namespace FinalProject.UI.Controllers
                     ManagerVM mvm = new ManagerVM();
                     mvm.UserID = employee.UserID;
                     mvm.EmployeeName = employee.FirstName + " " + employee.LastName;
-                    foreach (var cc in db.CourseCompletions.Where(u => u.UserID == employee.UserID).Include(c=>c.Course))
+                    foreach (var cc in db.CourseCompletions.Where(u => u.UserID == employee.UserID).Include(c => c.Course))
                     {
                         if (cc.DateCompleted.AddYears(cc.Course.ValidFor) <= DateTime.Now.AddMonths(1))
                         {
@@ -43,7 +44,7 @@ namespace FinalProject.UI.Controllers
                     }
                     mvm.ExpCourses = expSoon;
                     int incCount = 0;
-                    foreach (var course in db.Courses)
+                    foreach (var course in db.Courses.Where(c=>c.IsActive))
                     {
                         if (db.CourseCompletions.Where(u => u.UserID == employee.UserID && u.CourseID == course.CourseID).Count() == 0)
                         {
@@ -63,13 +64,55 @@ namespace FinalProject.UI.Controllers
             return View(employees.ToList());
         }
 
+        [Authorize(Roles = "Manager")]
         public ActionResult ManagerEmployeeView()
         {
             var employees = TempData["employees"];
             return View(employees);
         }
 
+        [Authorize(Roles = "Employee")]
+        public ActionResult EmployeeProgress()
+        {
+            var id = User.Identity.GetUserId();
+            List<EmployeeVM> completeCourses = new List<EmployeeVM>();
+
+            foreach (var course in db.CourseCompletions.Where(cc => cc.UserID == id && cc.Course.IsActive).Include(c => c.Course))
+            {
+                EmployeeVM evm = new EmployeeVM();
+                evm.UserID = id;
+                evm.CourseName = course.Course.CourseName;
+                evm.Description = course.Course.Description;
+                evm.ValidFor = course.Course.ValidFor;
+                evm.LessonCount = db.Lessons.Where(x => x.CourseID == course.CourseID && x.IsActive).Count();
+                evm.DateCompleted = course.DateCompleted;
+                completeCourses.Add(evm);
+            }
+
+            List<IncompleteCourseVM> incompleteCourses = new List<IncompleteCourseVM>();
+
+            foreach (var course in db.Courses.Where(c => c.IsActive))
+            {
+                if (db.CourseCompletions.Where(c => c.UserID == id && c.CourseID == course.CourseID).Count() == 0)
+                {
+                    IncompleteCourseVM icvm = new IncompleteCourseVM();
+                    icvm.CourseID = course.CourseID;
+                    icvm.CourseName = course.CourseName;
+                    icvm.TotalLessons = db.Lessons.Where(c => c.CourseID == course.CourseID && c.IsActive).Count();
+                    icvm.LessonsComplete = db.LessonViews.Where(u => u.UserID == id && u.Lesson.CourseID == course.CourseID).Count();
+                    incompleteCourses.Add(icvm);
+                }
+            }
+
+            dynamic empCourses = new ExpandoObject();
+            empCourses.Incomplete = incompleteCourses;
+            empCourses.Complete = completeCourses;
+
+            return View(empCourses);
+        }
+
         // GET: Employees/Details/5
+        [Authorize(Roles = "Admin, Manager")]
         public ActionResult Details(string id)
         {
             if (id == null)
@@ -81,87 +124,47 @@ namespace FinalProject.UI.Controllers
             {
                 return HttpNotFound();
             }
-            if (User.IsInRole("Manager"))
+            List<EmployeeVM> completeCourses = new List<EmployeeVM>();
+
+            foreach (var course in db.CourseCompletions.Where(cc => cc.UserID == id).Include(c => c.Course))
             {
-                List<EmployeeVM> completeCourses = new List<EmployeeVM>();
-
-                foreach (var course in db.CourseCompletions.Where(cc => cc.UserID == id).Include(c => c.Course))
-                {
-                    EmployeeVM evm = new EmployeeVM();
-                    evm.UserID = id;
-                    evm.CourseName = course.Course.CourseName;
-                    evm.Description = course.Course.Description;
-                    evm.ValidFor = course.Course.ValidFor;
-                    evm.LessonCount = db.Lessons.Where(x => x.CourseID == course.CourseID).Count();
-                    evm.DateCompleted = course.DateCompleted;
-                    completeCourses.Add(evm);
-                }
-                TempData["completeCourses"] = completeCourses;
-
-                List<IncompleteCourseVM> incompleteCourses = new List<IncompleteCourseVM>();
-
-                foreach (var course in db.Courses)
-                {
-                    if (db.CourseCompletions.Where(c=>c.UserID == id && c.CourseID == course.CourseID).Count() == 0)
-                    {
-                        IncompleteCourseVM icvm = new IncompleteCourseVM();
-                        icvm.CourseID = course.CourseID;
-                        icvm.CourseName = course.CourseName;
-                        icvm.TotalLessons = db.Lessons.Where(c => c.CourseID == course.CourseID).Count();
-                        icvm.LessonsComplete = db.LessonViews.Where(u => u.UserID == id && u.Lesson.CourseID == course.CourseID).Count();
-                        incompleteCourses.Add(icvm);
-                    }
-                }
-                TempData["incompleteCourses"] = incompleteCourses;
-                TempData["Name"] = employee.FirstName + " " + employee.LastName;
-                var UserManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-                var user = UserManager.FindById(employee.UserID);
-                TempData["Email"] = user.Email;
-
-                return RedirectToAction("ManagerEmployeeDetailView");
+                EmployeeVM evm = new EmployeeVM();
+                evm.UserID = id;
+                evm.CourseName = course.Course.CourseName;
+                evm.Description = course.Course.Description;
+                evm.ValidFor = course.Course.ValidFor;
+                evm.LessonCount = db.Lessons.Where(x => x.CourseID == course.CourseID).Count();
+                evm.DateCompleted = course.DateCompleted;
+                completeCourses.Add(evm);
             }
 
-            return View(employee);
-        }
+            List<IncompleteCourseVM> incompleteCourses = new List<IncompleteCourseVM>();
 
-        public ActionResult ManagerEmployeeDetailView()
-        {
-            
-            ViewBag.Name = TempData["Name"];
-            ViewBag.Email = TempData["Email"];
+            foreach (var course in db.Courses.Where(c => c.IsActive))
+            {
+                if (db.CourseCompletions.Where(c => c.UserID == id && c.CourseID == course.CourseID).Count() == 0)
+                {
+                    IncompleteCourseVM icvm = new IncompleteCourseVM();
+                    icvm.CourseID = course.CourseID;
+                    icvm.CourseName = course.CourseName;
+                    icvm.TotalLessons = db.Lessons.Where(c => c.CourseID == course.CourseID && c.IsActive && c.Course.IsActive).Count();
+                    icvm.LessonsComplete = db.LessonViews.Where(u => u.UserID == id && u.Lesson.CourseID == course.CourseID).Count();
+                    incompleteCourses.Add(icvm);
+                }
+            }
             dynamic empCourses = new ExpandoObject();
-            empCourses.Incomplete = TempData["incompleteCourses"];
-            empCourses.Complete = TempData["completeCourses"];
-            
+            empCourses.Complete = completeCourses;
+            empCourses.Incomplete = incompleteCourses;
+            ViewBag.Name = employee.FirstName + " " + employee.LastName;
+            var UserManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var user = UserManager.FindById(employee.UserID);
+            ViewBag.Email = user.Email;
+
             return View(empCourses);
         }
 
-        // GET: Employees/Create
-        public ActionResult Create()
-        {
-            ViewBag.ManagerID = new SelectList(db.Employees, "UserID", "FirstName");
-            return View();
-        }
-
-        // POST: Employees/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "UserID,FirstName,LastName,ManagerID")] Employee employee)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Employees.Add(employee);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            ViewBag.ManagerID = new SelectList(db.Employees, "UserID", "FirstName", employee.ManagerID);
-            return View(employee);
-        }
-
         // GET: Employees/Edit/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit(string id)
         {
             if (id == null)
@@ -182,6 +185,7 @@ namespace FinalProject.UI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit([Bind(Include = "UserID,FirstName,LastName,ManagerID")] Employee employee)
         {
             if (ModelState.IsValid)
@@ -195,6 +199,7 @@ namespace FinalProject.UI.Controllers
         }
 
         // GET: Employees/Delete/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(string id)
         {
             if (id == null)
@@ -212,6 +217,7 @@ namespace FinalProject.UI.Controllers
         // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult DeleteConfirmed(string id)
         {
             Employee employee = db.Employees.Find(id);
