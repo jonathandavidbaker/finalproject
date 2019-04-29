@@ -1,20 +1,90 @@
-﻿@{
+﻿@model FinalProject.UI.Models.ContactViewModel
+
+@{
     ViewBag.Title = "Contact";
 }
-<hgroup>
-    <h2>@ViewBag.Title.</h2>
-    <h3>@ViewBag.Message</h3>
-</hgroup>
-<div>
-    <address>
-        One Microsoft Way<br />
-        Redmond, WA 98052-6399<br />
-        <abbr title="Phone">P:</abbr>
-        425.555.0100
-    </address>
 
-    <address>
-        <i class="icon-envelope"></i><strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-        <i class="icon-envelope"></i><strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-    </address>
-</div>
+
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "contactform" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div id="fh5co-services" class="fh5co-bg-section animate-box">
+        <div class="container">
+            <div class="row">
+                <div id="contactformbody" class="col-md-6 animate-box">
+
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="contact-form row">
+                        <div class="row form-group">
+
+                            <div class="col-md-6">
+                                @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label" })
+                                <div>
+                                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Your First Name" } })
+                                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label" })
+                                <div>
+                                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Your Last Name" } })
+                                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-group">
+
+                            <div class="col-md-12">
+                                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+                                <div>
+                                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @placeholder = "Your E-Mail Address" } })
+                                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+
+                            <div class="col-md-12">
+                                @Html.LabelFor(model => model.Subject, htmlAttributes: new { @class = "control-label" })
+                                <div>
+                                    @Html.EditorFor(model => model.Subject, new { htmlAttributes = new { @class = "form-control", @placeholder = "Subject of this Message" } })
+                                    @Html.ValidationMessageFor(model => model.Subject, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+
+                            <div class="col-md-12">
+                                @Html.LabelFor(model => model.Message, htmlAttributes: new { @class = "control-label" })
+                                <div>
+                                    @Html.EditorFor(model => model.Message, new { htmlAttributes = new { @class = "form-control", @cols = "30", @rows = "10", @placeholder = "Type your message here." } })
+                                    @Html.ValidationMessageFor(model => model.Message, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div id="contactformbutton" class="form-group">
+                            <input type="submit" value="Send Message" class="btn btn-primary g-recaptcha" data-sitekey="6Lecf5gUAAAAAE8IcsCTcFM-qb-QJCEZGlwmwgDU" data-callback='onSubmit' data-badge="bottomleft">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+        function onSubmit(token) {
+            document.getElementById("contactform").submit();
+        }
+    </script>
+
+}
