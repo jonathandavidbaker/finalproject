@@ -7,51 +7,66 @@
     @Html.ActionLink("Create New", "Create")
 </p>
 <table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.LessonTitle)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Introduction)
-        </th>
-        <th>
-            Video?
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PdfFileName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Course.CourseName)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.LessonTitle)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Introduction)
-        </td>
-        <td>
-            @if (item.VideoURL != null)
-            {
-                @:Yes
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.LessonTitle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Introduction)
+            </th>
+            <th>
+                Video?
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PdfFileName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Course.CourseName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LessonTitle)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Introduction)
+                </td>
+                <td>
+                    @if (item.VideoURL != null)
+                    {
+                        @:Yes
             }
-        </td>
-        <td>
-            <a href="@Url.Content("~/Content/Files/" + @item.PdfFileName)" target="_blank">Click to View Document</a>
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Course.CourseName)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.LessonID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.LessonID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.LessonID })
-        </td>
-    </tr>
-}
-
+                </td>
+                <td>
+                    <a href="@Url.Content("~/Content/Files/" + @item.PdfFileName)" target="_blank">Click to View Document</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Course.CourseName)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.LessonID }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.LessonID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.LessonID })
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
+
+@section scripts{
+    <script>
+    $(document).ready( function () {
+        $('.table').DataTable({
+            paging: false,
+            searching: false,
+            info: false
+        });
+    } );
+    </script>
+}

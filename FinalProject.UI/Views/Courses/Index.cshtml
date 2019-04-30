@@ -10,54 +10,73 @@
 }
 
 <table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.CourseName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Description)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ValidFor)
-        </th>
-        <th>
-        </th>
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CourseName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ValidFor)
+            </th>
+            <th>
+            </th>
 
-        @if (User.IsInRole("Admin"))
+            @if (User.IsInRole("Admin"))
+            {
+                <th></th>
+            }
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
         {
-            <th></th>
-        }
-
-    </tr>
-    @foreach (var item in Model)
-    {
-        if (User.IsInRole("Admin") || item.IsActive)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CourseName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ValidFor)
-                </td>
-                <td>
-                    @Html.ActionLink("View Course", "Details", new { id = item.CourseID })
-
-                </td>
-                
-                @if (User.IsInRole("Admin"))
-                {
+            if (User.IsInRole("Admin") || item.IsActive)
+            {
+                <tr>
                     <td>
-                        @Html.ActionLink("Edit", "Edit", new { id = item.CourseID }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = item.CourseID })
+                        @Html.DisplayFor(modelItem => item.CourseName)
                     </td>
-                }
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @if (item.ValidFor < 10)
+                    {
+                            @item.ValidFor
+                        }
+                    </td>
+                    <td>
+                        @Html.ActionLink("View Course", "Details", new { id = item.CourseID })
 
-            </tr>
+                    </td>
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", new { id = item.CourseID }) |
+                            @Html.ActionLink("Delete", "Delete", new { id = item.CourseID })
+                        </td>
+                    }
+
+                </tr>
+            }
+
         }
-
-    }
+    </tbody>
 </table>
+
+@section scripts{
+    <script>
+    $(document).ready( function () {
+        $('.table').DataTable({
+            paging: false,
+            searching: false,
+            info: false
+        });
+    } );
+    </script>
+}

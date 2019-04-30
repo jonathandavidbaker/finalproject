@@ -5,66 +5,79 @@
 }
 
 <p>@ViewBag.CourseDescription</p>
-<p>This course is valid for @ViewBag.ValidFor years before it will need to be renewed.</p>
+<p>This course is valid for @ViewBag.ValidFor year@(ViewBag.ValidFor > 1 ? "s" : "") before it will need to be renewed.</p>
 <table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.LessonTitle)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Introduction)
-        </th>
-        <th>
-            Video?
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Course.CourseName)
-        </th>
-        <th></th>
-
-
-    </tr>
-
-    @foreach (var item in Model)
-    {
-        if (User.IsInRole("Admin") || item.IsActive)
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.LessonTitle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Introduction)
+            </th>
+            <th>
+                Video?
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Course.CourseName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LessonTitle)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Introduction)
-                </td>
-                <td>
-                    @if (item.VideoURL != null)
+            if (User.IsInRole("Admin") || item.IsActive)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LessonTitle)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Introduction)
+                    </td>
+                    <td>
+                        @if (item.VideoURL != null)
                     {
-                        @:Yes
-                    } else
-                    {
-                        @:No
+                            @:Yes
                     }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Course.CourseName)
-                </td>
-                <td>
-                    @if (User.IsInRole("Admin"))
+                        else
+                        {
+                            @:No
+                    }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Course.CourseName)
+                    </td>
+                    <td>
+                        @if (User.IsInRole("Admin"))
                     {
 
-                        @Html.ActionLink("Edit", "Edit", "Lessons", new { id = item.LessonID }, null) @:|
+                            @Html.ActionLink("Edit", "Edit", "Lessons", new { id = item.LessonID }, null) @:|
                     }
 
-                    @Html.ActionLink("View Lesson", "Details", "Lessons", new { id = item.LessonID }, null)
-                    @if (User.IsInRole("Admin"))
+                        @Html.ActionLink("View Lesson", "Details", "Lessons", new { id = item.LessonID }, null)
+                        @if (User.IsInRole("Admin"))
                     {
-                        @:|
-                        @Html.ActionLink("Delete", "Delete", "Lessons", new { id = item.LessonID }, null)
-                    }
-                </td>
-            </tr>
+                            @:|
+                            @Html.ActionLink("Delete", "Delete", "Lessons", new { id = item.LessonID }, null)
+                        }
+                    </td>
+                </tr>
+            }
+
         }
-
-    }
-
+    </tbody>
 </table>
+
+@section scripts{
+    <script>
+    $(document).ready( function () {
+        $('.table').DataTable({
+            paging: false,
+            searching: false,
+            info: false
+        });
+    } );
+    </script>
+}

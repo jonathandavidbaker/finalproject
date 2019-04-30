@@ -2,80 +2,100 @@
 @{
     ViewBag.Title = "Employee Progress";
 }
+<div class="Courses">
+    <h3>Incomplete Courses</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Course
+                </th>
+                <th>
+                    Lessons Remaining
+                </th>
+                <th>
+                    Percent Complete
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Incomplete)
+            {
+                <tr>
+                    <td>
+                        @item.CourseName
+                    </td>
+                    <td>
+                        @item.LessonsRemaining
+                    </td>
+                    <td>
+                        @item.PercentComplete%
+                    </td>
+                    <td><a href="@Url.Action("Details","Courses", new { id = item.CourseID })">Go to Course</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="Courses">
+    <h3>Completed Courses</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Course
+                </th>
 
-<h1>Incomplete Courses</h1>
-<table class="table">
-    <tr>
-        <th>
-            Course
-        </th>
-        <th>
-            Lessons Remaining
-        </th>
-        <th>
-            Percent Complete
-        </th>
-        <th></th>
-    </tr>
+                <th>
+                    Years Valid
+                </th>
+                <th>
+                    Date Completed
+                </th>
+                <th>
+                    Expiration Date
+                </th>
 
-    @foreach (var item in Model.Incomplete)
-    {
-        <tr>
-            <td>
-                @item.CourseName
-            </td>
-            <td>
-                @item.LessonsRemaining
-            </td>
-            <td>
-                @item.PercentComplete%
-            </td>
-            <td><a href="@Url.Action("Details","Courses", new { id = item.CourseID })">Go to Course</a></td>
-        </tr>
-    }
+            </tr>
+        </thead>
+        <tbody>
 
-</table>
-
-<h1>Completed Courses</h1>
-<table class="table">
-    <tr>
-        <th>
-            Course
-        </th>
-        <th>
-            Description
-        </th>
-        <th>
-            Years Valid
-        </th>
-        <th>
-            Date Completed
-        </th>
-        <th>
-            Expiration Date
-        </th>        
-    </tr>
-
-    @foreach (var item in Model.Complete)
-    {
-        <tr>
-            <td>
-                @item.CourseName
-            </td>
-            <td>
-                @item.Description
-            </td>
-            <td>
-                @item.ValidFor
-            </td>
-            <td>
-                @item.DateCompleted.ToString("MM/dd/yyyy")
-            </td>
-            <td>
-                @item.ExpirationDate.ToString("MM/dd/yyyy")
-            </td>
-        </tr>
-    }
-
-</table>
-
+            @foreach (var item in Model.Complete)
+            {
+                <tr>
+                    <td>
+                        @item.CourseName
+                    </td>
+                    <td>
+                        @if (item.ValidFor < 10)
+                {
+                            @item.ValidFor
+                        }
+                    </td>
+                    <td>
+                        @item.DateCompleted.ToString("MM/dd/yyyy")
+                    </td>
+                    <td>
+                        @if (item.ExpirationDate < DateTime.Now)
+                {
+                            <span class="Expired">EXPIRED</span> @:on
+                }
+                        <span class="@(item.ExpirationDate <= DateTime.Now.AddMonths(1) ? "ExpiresSoon" : "Current")">@item.ExpirationDate.ToString("MM/dd/yyyy")</span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('.table').DataTable({
+                paging: false,
+                searching: false,
+                info: false
+            });
+        });
+    </script>
+}

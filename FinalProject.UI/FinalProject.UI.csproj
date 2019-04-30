@@ -197,6 +197,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\css\animate.css" />
     <Content Include="Content\css\bootstrap.css" />
+    <Content Include="Content\css\custom.css" />
     <Content Include="Content\css\flexslider.css" />
     <Content Include="Content\css\icomoon.css" />
     <Content Include="Content\css\index.html" />
@@ -210,6 +211,7 @@
     <Content Include="Content\images\loader.gif" />
     <Content Include="Content\images\loc.png" />
     <Content Include="Content\images\person1.jpg" />
+    <Content Include="Content\images\training.jpg" />
     <Content Include="Content\images\work-1.jpg" />
     <Content Include="Content\images\work-2.jpg" />
     <Content Include="Content\images\work-3.jpg" />

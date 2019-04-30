@@ -1,0 +1,40 @@
+﻿.ExpiresSoon{
+    color: red;
+}
+.Expired{
+    font-weight: bold;
+    font-size: 1.05em;
+}
+table{
+    text-align: center;
+}
+th{
+    text-align: center;
+}
+.Courses{
+    display: block;
+    margin: auto;
+    padding: 5%;
+}
+#ProgressHeader{
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+
+.Courses h3{
+    text-align: center;
+}
+
+#hometext, #image{
+    display: inline-block;
+    margin: auto;
+    padding: 5%;
+}
+
+#contactformbody{
+    width: 50%;
+    margin: auto;
+    float: unset;
+}
+

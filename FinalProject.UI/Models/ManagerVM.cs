@@ -17,7 +17,7 @@ namespace FinalProject.UI.Models
         [Display(Name = "Number of Incomplete Courses")]
         public int IncCourses { get; set; }
 
-        [Display(Name = "Number of Courses Expiring Soon")]
+        [Display(Name = "Expired or Expiring Soon")]
         public int ExpCourses { get; set; }
     }
 }

@@ -1,56 +1,32 @@
 ﻿@model FinalProject.DATA.Lesson
-
 @{
     ViewBag.Title = Model.LessonTitle;
 }
+<dl class="dl-horizontal">
 
-<h2>@ViewBag.Title</h2>
+    <dt>
+        @Html.DisplayNameFor(model => model.Introduction)
+    </dt>
+    <dd>
+        @Html.DisplayFor(model => model.Introduction)
+    </dd>
+</dl>
 
-<div>
-    <h4>Lesson</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        
+@if (Model.VideoURL != null)
+{
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/@Model.VideoURL" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+}
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Introduction)
-        </dt>
+@if (Model.PdfFileName != "Not Available")
+{
+    <a href="@Url.Content("~/Content/Files/" + Model.PdfFileName)" target="_blank">Click to View Document</a>
+}
 
-        <dd>
-            @Html.DisplayFor(model => model.Introduction)
-        </dd>
-
-        <dt>
-           
-        </dt>
-
-        <dd>
-            @if (Model.VideoURL != null)
-            {
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/@Model.VideoURL" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            }            
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PdfFileName)
-        </dt>
-
-        <dd>
-            <a href="@Url.Content("~/Content/Files/" + Model.PdfFileName)" target="_blank">Click to View Document</a>
-        </dd>
-
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Course.CourseName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Course.CourseName)
-        </dd>
-
-    </dl>
-</div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.LessonID }) |
+    @if (User.IsInRole("Admin"))
+    {
+        @Html.ActionLink("Edit", "Edit", new { id = Model.LessonID }) @:|
+    }
+
     @Html.ActionLink("Back to Course", "Details", "Courses", new { id = Model.CourseID }, null)
 </p>
