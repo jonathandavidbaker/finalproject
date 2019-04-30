@@ -6,7 +6,7 @@
 
 
 
-@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "contactform" }))
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "contactform contactcontainer" }))
 {
     @Html.AntiForgeryToken()
 
@@ -67,8 +67,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="contactformbutton" class="form-group">
-                            <input type="submit" value="Send Message" class="btn btn-primary g-recaptcha" data-sitekey="6Lecf5gUAAAAAE8IcsCTcFM-qb-QJCEZGlwmwgDU" data-callback='onSubmit' data-badge="bottomleft">
+                        <div class="form-group">
+                            <input id="contactformbutton" type="submit" value="Send Message" class="btn btn-primary g-recaptcha" data-sitekey="6Lecf5gUAAAAAE8IcsCTcFM-qb-QJCEZGlwmwgDU" data-callback='onSubmit' data-badge="bottomleft">
                         </div>
                     </div>
                 </div>

@@ -36,5 +36,26 @@ th{
     width: 50%;
     margin: auto;
     float: unset;
+    background-color: #fff;
 }
 
+#loginform{
+    display: block;
+    margin: auto;
+    padding: 5%;
+}
+
+#contactcontainer, .fadeInUp{
+    background: #fff;
+    
+}
+
+#contactformbutton{
+    background-color: #DF6226;
+    border-color: #DF6226;
+}
+
+#contactformbutton:hover{
+    background-color: #FB8803;
+    border-color: #FB8803;
+}

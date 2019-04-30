@@ -74,6 +74,7 @@
                                 <li><a href="@Url.Action("EmployeeProgress", "Employees")">My Progress</a></li>
                             }
                             <li><a href="@Url.Action("Index", "Courses")">All Courses</a></li>
+                            <li><a href="@Url.Action("Contact", "Home")">Contact</a></li>
                         </ul>
                     </div>
                     <div class="col-xs-2 text-center">
@@ -81,7 +82,7 @@
                     </div>
                     <div class="col-xs-5 text-left menu-1">
                         <ul>
-                            <li><a href="@Url.Action("Contact", "Home")">Contact</a></li>
+                            
                             @Html.Partial("_LoginPartial")
                         </ul>
                     </div>
@@ -150,7 +151,7 @@
                 if (aController[1] == pController[0]) {
                     $(this).addClass('active');
                 }
-                if (aController[1] == 'Home' && window.location.pathname != fullAnchor) {
+                if (((aController[1] == 'Home') || (aController[1] == 'Account')) && window.location.pathname != fullAnchor) {
                     $(this).removeClass('active');
                 }
             });

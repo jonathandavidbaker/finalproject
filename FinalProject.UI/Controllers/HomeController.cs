@@ -18,14 +18,6 @@ namespace IdentitySample.Controllers
             return View();
         }
 
-        public ActionResult GetName()
-        {
-            var id = User.Identity.GetUserId();
-            Employee employee = db.Employees.Find(id);
-            //string name = employee.FirstName;
-            return PartialView(employee);
-        }
-
         [HttpGet]
         [Authorize]
         public ActionResult About()
