@@ -37,7 +37,7 @@
             if (User.IsInRole("Admin") || item.IsActive)
             {
                 <tr>
-                    <td>
+                    <td class="names">
                         @Html.DisplayFor(modelItem => item.CourseName)
                     </td>
                     <td>
@@ -75,7 +75,10 @@
         $('.table').DataTable({
             paging: false,
             searching: false,
-            info: false
+            info: false,
+            "initComplete": function (settings, json) {
+                $(".table").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");
+            },
         });
     } );
     </script>

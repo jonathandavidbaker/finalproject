@@ -29,7 +29,7 @@
             @foreach (var item in Model.Incomplete)
             {
                 <tr>
-                    <td>
+                    <td class="names">
                         @item.CourseName
                     </td>
                     <td>
@@ -66,7 +66,7 @@
             @foreach (var item in Model.Complete)
             {
                 <tr>
-                    <td>
+                    <td class="names">
                         @item.CourseName
                     </td>
                     <td>
@@ -97,8 +97,12 @@
         $('.table').DataTable({
             paging: false,
             searching: false,
-            info: false
+            info: false,
+            "initComplete": function (settings, json) {
+                $(".table").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");
+            },
         });
-    } );
+    });
+    
     </script>
 }
