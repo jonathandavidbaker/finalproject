@@ -29,7 +29,6 @@ th{
 #hometext, #image{
     display: inline-block;
     margin: auto;
-    padding: 5%;
 }
 
 #contactformbody{
@@ -58,4 +57,16 @@ th{
 #contactformbutton:hover{
     background-color: #FB8803;
     border-color: #FB8803;
+}
+
+.lesson{
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+
+.lessonitem{
+    display: block;
+    margin: auto;
+    padding: 5%;
 }

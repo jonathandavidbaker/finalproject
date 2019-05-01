@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = Model.LessonTitle;
 }
+
 <dl class="dl-horizontal">
 
     <dt>
@@ -11,22 +12,27 @@
         @Html.DisplayFor(model => model.Introduction)
     </dd>
 </dl>
-
-@if (Model.VideoURL != null)
-{
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/@Model.VideoURL" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-}
-
-@if (Model.PdfFileName != "Not Available")
-{
-    <a href="@Url.Content("~/Content/Files/" + Model.PdfFileName)" target="_blank">Click to View Document</a>
-}
-
-<p>
-    @if (User.IsInRole("Admin"))
-    {
-        @Html.ActionLink("Edit", "Edit", new { id = Model.LessonID }) @:|
+<div class="lesson">
+    <div class="lessonitem">
+        @if (Model.PdfFileName != "Not Available")
+        {
+                    <a href="@Url.Content("~/Content/Files/" + Model.PdfFileName)" target="_blank">Click to View Supplementary Document</a>
+        }
+    </div>
+    <div class="lessonitem">
+        @if (Model.VideoURL != null)
+        {
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/@Model.VideoURL" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        }
+    </div>
+    <div class="lessonitem">
+        <p>
+            @if (User.IsInRole("Admin"))
+            {
+                @Html.ActionLink("Edit", "Edit", new { id = Model.LessonID }) @:|
     }
 
-    @Html.ActionLink("Back to Course", "Details", "Courses", new { id = Model.CourseID }, null)
-</p>
+            @Html.ActionLink("Back to Course", "Details", "Courses", new { id = Model.CourseID }, null)
+        </p>
+    </div>
+</div>

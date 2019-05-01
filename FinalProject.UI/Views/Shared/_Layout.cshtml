@@ -69,7 +69,7 @@
                             {
                                 <li><a href="@Url.Action("Index", "Employees")">All Employees</a></li>
                             }
-                            else
+                            else if (User.IsInRole("Employee"))
                             {
                                 <li><a href="@Url.Action("EmployeeProgress", "Employees")">My Progress</a></li>
                             }
