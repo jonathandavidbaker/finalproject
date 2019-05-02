@@ -57,10 +57,7 @@ namespace FinalProject.UI.Controllers
                 }
                 return RedirectToAction("ManagerEmployeeView");
             }
-
-
             var employees = db.Employees.Include(e => e.Employee1);
-            ViewBag.UserID = User.Identity.GetUserId();
             return View(employees.ToList());
         }
 

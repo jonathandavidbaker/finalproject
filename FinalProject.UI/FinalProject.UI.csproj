@@ -361,6 +361,7 @@
     <Content Include="Content\sass\bootstrap\mixins\_vendor-prefixes.scss" />
     <Content Include="Content\sass\bootstrap.scss" />
     <Content Include="Content\sass\style.scss" />
+    <Content Include="Content\JonathanBakerDocumentation.pdf" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

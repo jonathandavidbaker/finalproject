@@ -6,6 +6,11 @@
 
 <p>@ViewBag.CourseDescription</p>
 <p>This course is valid for @ViewBag.ValidFor year@(ViewBag.ValidFor > 1 ? "s" : "") before it will need to be renewed.</p>
+
+@if (User.IsInRole("Admin"))
+{
+    @Html.ActionLink("Add New Lesson", "Create", "Lessons", null, null);
+}
 <table class="table">
     <thead>
         <tr>

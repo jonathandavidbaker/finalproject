@@ -75,9 +75,14 @@ namespace FinalProject.UI.Controllers
                     else
                     {
                         CourseCompletion updateCourseCompletion = db.CourseCompletions.Where(cc => cc.UserID == userid && cc.CourseID == lesson.CourseID).Single();
-                        updateCourseCompletion.DateCompleted = DateTime.Now;
-
-                        db.Entry(updateCourseCompletion).State = EntityState.Modified;
+                        Course course = db.Courses.Find(lesson.CourseID);
+                        DateTime exp = updateCourseCompletion.DateCompleted.AddYears(course.ValidFor).AddMonths(-1);
+                        if (db.LessonViews.Where(lv=>lv.DateViewed >= exp && 
+                            lv.UserID == userid && lv.Lesson.CourseID == lesson.CourseID).Count() == db.Lessons.Where(l => l.CourseID == lesson.CourseID).Count())
+                        {
+                            updateCourseCompletion.DateCompleted = DateTime.Now;
+                            db.Entry(updateCourseCompletion).State = EntityState.Modified;
+                        }                     
                     }
 
                     Employee e = db.Employees.Find(userid);
@@ -88,7 +93,6 @@ namespace FinalProject.UI.Controllers
                     string body = $"{e.FirstName} {e.LastName} has completed the course {lesson.Course.CourseName} as of {DateTime.Now:MM/dd/yyyy}.";
 
                     MailMessage msg = new MailMessage("no-reply@jdbaker.net",
-                                                      //"jon.david.baker@gmail.com",
                                                       user.Email,
                                                       "Email from Agency - " + e.FirstName + " " + e.LastName + " completed a course.",
                                                       body);
