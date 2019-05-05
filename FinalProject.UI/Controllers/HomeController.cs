@@ -46,7 +46,7 @@ namespace IdentitySample.Controllers
             msg.IsBodyHtml = true;
                         
             SmtpClient client = new SmtpClient("mail.jdbaker.net");
-            client.Credentials = new NetworkCredential("no-reply@jdbaker.net", "pr$aM*Y*38V");
+            client.Credentials = new NetworkCredential("no-reply@jdbaker.net", "EMAIL PASSWORD HERE");
             
             using (client) 
             {
